@@ -1,7 +1,8 @@
 const es = {
   section: {
     title: {
-      login: 'Iniciar sesión'
+      login: 'Iniciar sesión',
+      createAccount: 'Crear cuenta',
     },
   },
 
@@ -18,7 +19,18 @@ const es = {
     },
     label: {
       email: 'Correo electrónico',
-      password: 'Contraseña'
+      password: 'Contraseña',
+      name: 'Nombre',
+      lastName: 'Apellidos',
+    },
+  },
+
+  error: {
+    input: {
+      required: 'Este campo es requerido.',
+    },
+    message: {
+      login_title: 'Error al iniciar sesión.',
     },
   },
 };

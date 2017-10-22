@@ -1,7 +1,8 @@
 const en = {
   section: {
     title: {
-      login: 'Log in'
+      login: 'Log in',
+      createAccount: 'Create account',
     },
   },
 
@@ -18,7 +19,18 @@ const en = {
     },
     label: {
       email: 'E-Mail',
-      password: 'Password'
+      password: 'Password',
+      name: 'First name',
+      lastName: 'Last name',
+    },
+  },
+
+  error: {
+    input: {
+      required: 'This field is required.',
+    },
+    message: {
+      login_title: 'Failed to login.',
     },
   },
 };

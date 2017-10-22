@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
 
-import colors from '../../themes/Color';
+import { colors, layout } from '../../styles/Theme';
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flex: 1,
     flexDirection: 'column',
-    padding: 16,
+    padding: layout.padding,
   },
   logo: {
     height: 200,
@@ -18,10 +18,10 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   buttonsContainer: {
-    bottom: 16,
-    left: 16,
+    bottom: layout.padding,
+    left: layout.padding,
     position: 'absolute',
-    right: 16,
+    right: layout.padding,
   },
   textDividerContainer: {
     flexDirection: 'row',

@@ -2,8 +2,17 @@ import React, { Component } from 'react';
 import {
   Text,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
-import styles from './TextRobotoStyles';
+import styles from './styles';
+
+const propTypes = {
+  style: PropTypes.any,
+};
+
+const defaultProps = {
+  style: undefined,
+};
 
 class TextRoboto extends Component {
   render() {
@@ -14,5 +23,8 @@ class TextRoboto extends Component {
     );
   }
 }
+
+TextRoboto.propTypes = propTypes;
+TextRoboto.defaultProps = defaultProps;
 
 export default TextRoboto;

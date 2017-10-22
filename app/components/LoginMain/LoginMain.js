@@ -5,6 +5,7 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -13,14 +14,21 @@ import I18n from '../../i18n/i18n';
 import TextRoboto from '../Common/TextRoboto/TextRoboto';
 import Button from '../Common/Button/Button';
 
-import styles from './LoginMainStyles';
+import styles from './styles';
+
+const propTypes = {
+  onSingInPress: PropTypes.func.isRequired,
+  onSignUpPress: PropTypes.func.isRequired,
+};
 
 class LoginMain extends Component {
 
   render() {
     const {
       onSingInPress,
+      onSignUpPress,
     } = this.props;
+
     return (
       <LinearGradient
         colors={['#111F21', '#2F4247']}
@@ -34,7 +42,7 @@ class LoginMain extends Component {
         <View style={styles.logoContainer}>
           <Image
             style={styles.logo}
-            source={require('../../assets/images/logo.png')}
+            source={require('../../../assets/images/logo.png')}
           />
         </View>
 
@@ -56,14 +64,20 @@ class LoginMain extends Component {
 
           <Button
             style={{ backgroundColor: '#fff' }}
-            icon={require('../../assets/images/google_icon.png')}
+            icon={require('../../../assets/images/google_icon.png')}
+            onPressButton={() => {
+              console.log('google login');
+            }}
           >
             Google
           </Button>
 
           <Button
             style={{ backgroundColor: '#3b5998' }}
-            icon={require('../../assets/images/facebook_icon.png')}
+            icon={require('../../../assets/images/facebook_icon.png')}
+            onPressButton={() => {
+              console.log('facebook login');
+            }}
           >
 
             <Text style={{ color: '#fff' }}>
@@ -101,6 +115,7 @@ class LoginMain extends Component {
 
             <Button
               style={{ flex: 1, marginLeft: 5 }}
+              onPressButton={onSignUpPress}
             >
               {I18n.t('forms.buttons.signUp')}
             </Button>
@@ -113,5 +128,7 @@ class LoginMain extends Component {
     );
   }
 }
+
+LoginMain.propTypes = propTypes;
 
 export default LoginMain;

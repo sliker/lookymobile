@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import colors from '../../../themes/Color';
+import { colors, layout } from '../../../styles/Theme';
 
 const styles = StyleSheet.create({
   button: {
@@ -40,6 +40,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
     width: 35
+  },
+  loading: {
+    flex: 1,
   },
 });
 

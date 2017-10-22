@@ -4,10 +4,30 @@ import {
   TextInput,
 } from 'react-native';
 
+import PropTypes from 'prop-types';
+
 import TextRoboto from '../TextRoboto/TextRoboto';
 
-import Color from '../../../themes/Color';
-import styles from './TextInputFieldStyles';
+import { colors } from '../../../styles/Theme';
+import styles from './styles';
+
+const propTypes = {
+  errorMessage: PropTypes.string,
+  label: PropTypes.string,
+  inputProps: PropTypes.object,
+  inputRef: PropTypes.func,
+  placeholder: PropTypes.string,
+  style: PropTypes.any,
+};
+
+const defaultProps = {
+  errorMessage: '',
+  label: '',
+  inputProps: {},
+  inputRef: undefined,
+  placeholder: '',
+  style: undefined,
+};
 
 class TextInputField extends Component {
   constructor(props) {
@@ -34,7 +54,7 @@ class TextInputField extends Component {
   }
 
   render() {
-    const { label, placeholder, inputProps, inputRef, style } = this.props;
+    const { label, placeholder, inputProps, inputRef, style, errorMessage } = this.props;
     const { isFocus } = this.state;
 
     const labelElement = (label) ? (
@@ -45,20 +65,30 @@ class TextInputField extends Component {
       </View>
     ) : null;
     return (
-      <View style={[ { height: 88 }, style ]}>
+      <View style={[ styles.container, style ]}>
         { labelElement }
         <TextInput
           style={[ styles.input, isFocus ? styles.inputFocus : null ]}
           placeholder={placeholder ? placeholder : ''}
-          plaholderTextColor={Color.grey600}
+          plaholderTextColor={colors.grey600}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           ref={inputRef}
           {...inputProps}
         />
+        { errorMessage !== '' &&
+          <View>
+            <TextRoboto style={styles.errorText}>
+              { errorMessage }
+            </TextRoboto>
+          </View>
+        }
       </View>
     );
   }
 }
+
+TextInputField.propTypes = propTypes;
+TextInputField.defaultProps = defaultProps;
 
 export default TextInputField;
