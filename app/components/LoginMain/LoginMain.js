@@ -52,11 +52,9 @@ class LoginMain extends Component {
             <View
               style={styles.divider}
             />
-            <Text style={styles.loginText}>
-              <TextRoboto>
-                {I18n.t('login.loginWith')}
-              </TextRoboto>
-            </Text>
+            <TextRoboto style={styles.loginText}>
+              {I18n.t('login.loginWith')}
+            </TextRoboto>
             <View
               style={styles.divider}
             />
@@ -92,11 +90,9 @@ class LoginMain extends Component {
               style={styles.divider}
             />
 
-            <Text style={styles.loginText}>
-              <TextRoboto>
-                {I18n.t('login.loginOr')}
-              </TextRoboto>
-            </Text>
+            <TextRoboto style={styles.loginText}>
+              {I18n.t('login.loginOr')}
+            </TextRoboto>
 
             <View
               style={styles.divider}

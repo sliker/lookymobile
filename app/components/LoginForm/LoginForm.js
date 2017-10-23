@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   Keyboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -10,19 +9,25 @@ import I18n from '../../i18n/i18n';
 
 import Button from '../Common/Button/Button';
 import TextInputField from '../Common/TextInputField/TextInputField';
-import Toast from '../Common/Toast/Toast';
+import AlertDialog from '../Common/AlertDialog/AlertDialog';
 
 import styles from './styles';
 
 const propTypes = {
   onLogin: PropTypes.func.isRequired,
+  onRecoverEmail: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   error: PropTypes.bool,
+  recoverPassword: PropTypes.object,
 };
 
 const defaultProps = {
   loading: false,
   error: false,
+  recoverPassword: {
+    error: false,
+    success: false,
+  },
 };
 
 class LoginForm extends Component {
@@ -30,21 +35,25 @@ class LoginForm extends Component {
     super(props);
 
     this.onLogin = this.onLogin.bind(this);
+    this.onRecoverEmailSubmit = this.onRecoverEmailSubmit.bind(this);
+    this.resetRecoverEmail = this.resetRecoverEmail.bind(this);
 
     this.state = {
       // fields
       email: '',
       password: '',
+      emailRecover: '',
       // errors
       emailError: false,
       passwordError: false,
+      emailRecoverError: false,
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.error) {
+    if (nextProps.error || nextProps.recoverPassword.error || nextProps.recoverPassword.success) {
+      // TODO: Fix position of Toast or see how to hide keyboard when focus after recover password alert dismissed
       Keyboard.dismiss();
-      this.toast.show(I18n.t('error.message.login_title'));
     }
   }
 
@@ -55,6 +64,7 @@ class LoginForm extends Component {
     const passwordTrim = password.trim();
 
     if (!emailTrim || !passwordTrim) {
+      // TODO: Add Firebase errors code explanation
       this.setState({
         emailError: !emailTrim,
         passwordError: !passwordTrim,
@@ -65,16 +75,61 @@ class LoginForm extends Component {
     onLogin(emailTrim, passwordTrim);
   }
 
+  onRecoverEmailSubmit() {
+    const recoverEmailTrim = this.state.emailRecover.trim();
+
+    if (!recoverEmailTrim) {
+      this.setState({
+        emailRecoverError: true,
+      });
+
+      return;
+    }
+
+    this.props.onRecoverEmail(recoverEmailTrim);
+    this.recoverPasswordDialog.dismiss();
+  }
+
+  resetRecoverEmail() {
+    this.setState({
+      emailRecover: '',
+      emailRecoverError: false,
+    });
+  }
+
   render() {
-    const { loading, error } = this.props;
-    const { emailError, passwordError } = this.state;
+    const { loading } = this.props;
+    const { emailError, passwordError, emailRecoverError } = this.state;
 
     return (
       <View style={styles.loginFormContainer}>
 
-        {error &&
-          <Text>An error has occur. Please try again.</Text>
-        }
+        <AlertDialog
+          ref={(dialog) => {
+            this.recoverPasswordDialog = dialog;
+          }}
+          title={I18n.t('forms.buttons.rememberPassword')}
+          positiveText={I18n.t('forms.buttons.recovery')}
+          onPositivePress={this.onRecoverEmailSubmit}
+          onDismiss={this.resetRecoverEmail}
+        >
+          <TextInputField
+            style={{ marginBottom: 0, height: 'auto' }}
+            placeholder={I18n.t('forms.label.email')}
+            errorMessage={emailRecoverError ? I18n.t('error.input.required') : ''}
+            inputProps={{
+              autoCapitalize: "none",
+              autoCorrect: false,
+              autoFocus: true,
+              returnKeyType: "go",
+              keyboardType: "email-address",
+              onSubmitEditing: this.onRecoverEmailSubmit,
+              onChangeText: (text) => {
+                this.setState({ emailRecover: text })
+              },
+            }}
+          />
+        </AlertDialog>
 
         <TextInputField
           label={I18n.t('forms.label.email')}
@@ -119,17 +174,12 @@ class LoginForm extends Component {
         <Button
           type="flat"
           onPressButton={() => {
-            console.log('recover password');
+            this.recoverPasswordDialog.show();
           }}
         >
           {I18n.t('forms.buttons.rememberPassword')}
         </Button>
 
-        <Toast
-          ref={(toast) => {
-            this.toast = toast;
-          }}
-        />
       </View>
     );
   }

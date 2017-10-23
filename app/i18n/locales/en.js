@@ -16,6 +16,7 @@ const en = {
       signIn: 'Sign in',
       signUp: 'Sign up',
       rememberPassword: 'Remember password',
+      recovery: 'Recover',
     },
     label: {
       email: 'E-Mail',
@@ -25,13 +26,24 @@ const en = {
     },
   },
 
+  success: {
+    message: {
+      recovery: 'The instructions have been sent to your E-Mail.',
+    }
+  },
+
   error: {
     input: {
       required: 'This field is required.',
     },
     message: {
+      global: 'An error occurred. Please try again.',
       login_title: 'Failed to login.',
     },
+  },
+
+  buttons: {
+    cancel: 'Cancel',
   },
 };
 

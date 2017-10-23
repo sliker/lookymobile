@@ -4,7 +4,7 @@ import { colors } from '../../../styles/Theme';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    backgroundColor: colors.toastBg,
     borderRadius: 12,
     bottom: 50,
     marginHorizontal: 12,

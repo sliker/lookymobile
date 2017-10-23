@@ -8,6 +8,10 @@ import {
   USER_PROFILE_CREATE,
   USER_PROFILE_CREATE_SUCCESS,
   USER_PROFILE_CREATE_ERROR,
+  USER_RECOVER_PASSWORD,
+  USER_RECOVER_PASSWORD_SUCCESS,
+  USER_RECOVER_PASSWORD_ERROR,
+  USER_RECOVER_PASSWORD_RESET,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -32,6 +36,10 @@ const initialState = {
       found: [],
       lost: [],
     },
+  },
+  recoverPassword: {
+    success: false,
+    error: false,
   },
 };
 
@@ -104,6 +112,39 @@ export default function user(state = initialState, action = {}) {
           loading: false,
           error: true,
           errorData: action.payload,
+        })
+      };
+    case USER_RECOVER_PASSWORD:
+      return Object.assign({}, state, {
+        error: false,
+        recoverPassword: Object.assign({}, state.recoverPassword, {
+          success: false,
+          error: false,
+        })
+      });
+    case USER_RECOVER_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        recoverPassword: Object.assign({}, state.recoverPassword, {
+          success: true,
+          error: false,
+        })
+      };
+    case USER_RECOVER_PASSWORD_ERROR:
+      return {
+        ...state,
+        recoverPassword: Object.assign({}, state.recoverPassword, {
+          success: false,
+          error: true,
+          errorData: action.payload,
+        })
+      };
+    case USER_RECOVER_PASSWORD_RESET:
+      return {
+        ...state,
+        recoverPassword: Object.assign({}, state.recoverPassword, {
+          success: false,
+          error: false,
         })
       };
     default:

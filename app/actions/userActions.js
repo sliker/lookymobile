@@ -12,6 +12,10 @@ import {
   USER_PROFILE_CREATE,
   USER_PROFILE_CREATE_SUCCESS,
   USER_PROFILE_CREATE_ERROR,
+  USER_RECOVER_PASSWORD,
+  USER_RECOVER_PASSWORD_SUCCESS,
+  USER_RECOVER_PASSWORD_ERROR,
+  USER_RECOVER_PASSWORD_RESET,
 } from './actionTypes';
 
 const loginWithEmail = (email) => {
@@ -82,6 +86,31 @@ const createProfileError = (error) => {
   }
 };
 
+const recoverPassword = () => {
+  return {
+    type: USER_RECOVER_PASSWORD,
+  }
+};
+
+const recoverPasswordSuccess = () => {
+  return {
+    type: USER_RECOVER_PASSWORD_SUCCESS,
+  }
+};
+
+const recoverPasswordError = (error) => {
+  return {
+    type: USER_RECOVER_PASSWORD_ERROR,
+    payload: error,
+  }
+};
+
+export const recoverPasswordReset = () => {
+  return {
+    type: USER_RECOVER_PASSWORD_RESET,
+  }
+};
+
 export const initLoginWithEmail = (email, password) => {
   return (dispatch) => {
     const auth = firebase.app().auth();
@@ -126,5 +155,14 @@ export const initCreateProfile = (userId, userProfileData) => {
       })
       .then(() => dispatch(createProfileSuccess()))
       .catch(error => dispatch(createProfileError(error)));
+  };
+};
+
+export const initRecoverPassword = (email) => {
+  return (dispatch) => {
+    dispatch(recoverPassword());
+    return firebase.app().auth().sendPasswordResetEmail(email)
+      .then(() => dispatch(recoverPasswordSuccess()))
+      .catch(error => dispatch(recoverPasswordError(error)))
   };
 };

@@ -20,6 +20,9 @@ const colors = {
   grey800: '#424242', // Text grey dark,
 
   error: '#d50000',
+
+  toastBg: 'rgba(52, 52, 52, 0.6)',
+  alertDialogBg: 'rgba(52, 52, 52, 0.6)',
 };
 
 const layout = {
