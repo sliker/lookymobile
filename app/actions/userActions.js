@@ -1,8 +1,13 @@
 import * as firebase from 'firebase';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
 
 import { createFolderId } from '../utils/imageUtil';
 
 import {
+  USER_LOGIN_SOCIAL,
+  USER_LOGIN_SOCIAL_SUCCESS,
+  USER_LOGIN_SOCIAL_ERROR,
+  USER_LOGIN_SOCIAL_CANCELED,
   USER_LOGIN_WITH_EMAIL,
   USER_LOGIN_WITH_EMAIL_SUCCESS,
   USER_LOGIN_WITH_EMAIL_ERROR,
@@ -12,6 +17,7 @@ import {
   USER_PROFILE_CREATE,
   USER_PROFILE_CREATE_SUCCESS,
   USER_PROFILE_CREATE_ERROR,
+  USER_PROFILE_SET,
   USER_RECOVER_PASSWORD,
   USER_RECOVER_PASSWORD_SUCCESS,
   USER_RECOVER_PASSWORD_ERROR,
@@ -86,6 +92,13 @@ const createProfileError = (error) => {
   }
 };
 
+const setUserProfile = (userProfileData) => {
+  return {
+    type: USER_PROFILE_SET,
+    payload: userProfileData,
+  }
+};
+
 const recoverPassword = () => {
   return {
     type: USER_RECOVER_PASSWORD,
@@ -105,10 +118,109 @@ const recoverPasswordError = (error) => {
   }
 };
 
+const loginWithSocial = (provider) => {
+  return {
+    type: USER_LOGIN_SOCIAL,
+    payload: provider,
+  }
+};
+
+const loginWithSocialSuccess = (user, token) => {
+  return {
+    type: USER_LOGIN_SOCIAL_SUCCESS,
+    payload: {
+      user,
+      token,
+    },
+  }
+};
+
+const loginWithSocialError = (error) => {
+  return {
+    type: USER_LOGIN_SOCIAL_ERROR,
+    payload: error,
+  }
+};
+
+const loginWithSocialCanceled = () => {
+  return {
+    type: USER_LOGIN_SOCIAL_CANCELED,
+  }
+};
+
 export const recoverPasswordReset = () => {
   return {
     type: USER_RECOVER_PASSWORD_RESET,
   }
+};
+
+export const initSocialLogin = (provider) => {
+  return (dispatch) => {
+    dispatch(loginWithSocial(provider));
+
+    const firebaseLogin = (credential, token) => {
+      return firebase.app().auth().signInWithCredential(credential)
+        .then((user) => {
+          dispatch(loginWithSocialSuccess(user, token));
+          // check if user has profile
+          return firebase.app().database().ref(`/users/${user.uid}`).once('value')
+            .then((snapshot) => {
+              // if not profile, create one
+              if (!snapshot.exists()) {
+                const profileData = {
+                  displayName: user.displayName,
+                  firstName: '',
+                  lastName: '',
+                  folderId: createFolderId(),
+                  provider: provider,
+                };
+                return dispatch(initCreateProfile(user.uid, profileData));
+              }
+
+              // user already has a profile, so set the data to the store
+              const profile = snapshot.val();
+              const profileData = {
+                displayName: profile.displayName,
+                firstName: profile.firstName || '',
+                lastName: profile.lastName || '',
+                folderId: profile.folderId,
+                provider: profile.provider,
+              };
+
+              return dispatch(setUserProfile(profileData));
+            });
+        })
+        .catch((error) => dispatch(loginWithSocialError(error)));
+    };
+
+    switch(provider) {
+      case 'facebook':
+        return LoginManager.logInWithReadPermissions(['email'])
+          .then((result) => {
+            if (result.isCancelled) {
+              return dispatch(loginWithSocialCanceled());
+            } else {
+              // Login successful :D
+              AccessToken.getCurrentAccessToken().then((data) => {
+                const token = data.accessToken.toString();
+                const credential = firebase.auth.FacebookAuthProvider.credential(token);
+
+                if (!credential) {
+                  return dispatch(loginWithSocialError('No auth provider'));
+                }
+
+                return firebaseLogin(credential, token);
+
+              });
+            }
+          }, (error) => dispatch(loginWithSocialError(error)));
+      case 'google':
+        // TODO
+        return;
+      default:
+        return dispatch(loginWithSocialError('No valid login provider'));
+    }
+  };
 };
 
 export const initLoginWithEmail = (email, password) => {

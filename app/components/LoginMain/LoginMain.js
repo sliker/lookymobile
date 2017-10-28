@@ -5,6 +5,7 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
+import { LoginButton, AccessToken } from 'react-native-fbsdk';
 import PropTypes from 'prop-types';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,6 +20,7 @@ import styles from './styles';
 const propTypes = {
   onSingInPress: PropTypes.func.isRequired,
   onSignUpPress: PropTypes.func.isRequired,
+  onSocialSignIn: PropTypes.func.isRequired,
 };
 
 class LoginMain extends Component {
@@ -27,6 +29,7 @@ class LoginMain extends Component {
     const {
       onSingInPress,
       onSignUpPress,
+      onSocialSignIn,
     } = this.props;
 
     return (
@@ -48,6 +51,24 @@ class LoginMain extends Component {
 
         <View style={styles.buttonsContainer}>
 
+          <LoginButton
+            onLoginFinished={(error, result) => {
+              if (error) {
+                alert("login has error: " + result.error);
+              } else if (result.isCancelled) {
+                alert("login is cancelled.");
+              } else {
+                console.log(result.grantedPermissions.toString());
+                AccessToken.getCurrentAccessToken().then(
+                  (data) => {
+                    alert(data.accessToken.toString())
+                  }
+                )
+              }
+            }}
+            onLogoutFinished={() => alert("logout.")}
+          />
+
           <View style={styles.textDividerContainer}>
             <View
               style={styles.divider}
@@ -64,7 +85,7 @@ class LoginMain extends Component {
             style={{ backgroundColor: '#fff' }}
             icon={require('../../../assets/images/google_icon.png')}
             onPressButton={() => {
-              console.log('google login');
+              onSocialSignIn('google')
             }}
           >
             Google
@@ -74,7 +95,7 @@ class LoginMain extends Component {
             style={{ backgroundColor: '#3b5998' }}
             icon={require('../../../assets/images/facebook_icon.png')}
             onPressButton={() => {
-              console.log('facebook login');
+              onSocialSignIn('facebook')
             }}
           >
 

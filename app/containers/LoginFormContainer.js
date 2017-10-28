@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Keyboard,
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';

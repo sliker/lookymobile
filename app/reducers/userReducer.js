@@ -1,4 +1,8 @@
 import {
+  USER_LOGIN_SOCIAL,
+  USER_LOGIN_SOCIAL_SUCCESS,
+  USER_LOGIN_SOCIAL_ERROR,
+  USER_LOGIN_SOCIAL_CANCELED,
   USER_LOGIN_WITH_EMAIL,
   USER_LOGIN_WITH_EMAIL_SUCCESS,
   USER_LOGIN_WITH_EMAIL_ERROR,
@@ -8,6 +12,7 @@ import {
   USER_PROFILE_CREATE,
   USER_PROFILE_CREATE_SUCCESS,
   USER_PROFILE_CREATE_ERROR,
+  USER_PROFILE_SET,
   USER_RECOVER_PASSWORD,
   USER_RECOVER_PASSWORD_SUCCESS,
   USER_RECOVER_PASSWORD_ERROR,
@@ -15,6 +20,7 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
+  token: '',
   email: '',
   userId: '',
   loading: false,
@@ -45,6 +51,30 @@ const initialState = {
 
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
+    case USER_LOGIN_SOCIAL:
+      return Object.assign({}, state, {
+        loading: true,
+        error: false,
+        profile: Object.assign({}, state.profile, {
+          provider: action.payload,
+        })
+      });
+    case USER_LOGIN_SOCIAL_SUCCESS:
+      return Object.assign({}, state, {
+        loading: false,
+        error: false,
+        token: action.payload.token,
+        userId: action.payload.user.uid,
+        email: action.payload.user.email,
+        profile: Object.assign({}, state.profile, {
+          profilePictureUrl: action.payload.user.photoURL,
+        })
+      });
+    case USER_LOGIN_SOCIAL_CANCELED:
+      return Object.assign({}, state, {
+        loading: false,
+        error: false,
+      });
     case USER_LOGIN_WITH_EMAIL:
       return Object.assign({}, state, {
         email: action.payload.email,
@@ -61,6 +91,7 @@ export default function user(state = initialState, action = {}) {
           profilePictureUrl: action.payload.photoURL,
         })
       });
+    case USER_LOGIN_SOCIAL_ERROR:
     case USER_LOGIN_WITH_EMAIL_ERROR:
       return Object.assign({}, state, {
         loading: false,
@@ -87,7 +118,7 @@ export default function user(state = initialState, action = {}) {
         errorMessage: action.payload.errorMessage,
       });
     case USER_PROFILE_CREATE:
-      const { displayName, firstName, lastName, folderId } = action.payload.profile;
+      const { displayName, firstName, lastName, folderId, provider } = action.payload.profile;
       return {
         ...state,
         profile: Object.assign({}, state.profile, {
@@ -96,6 +127,7 @@ export default function user(state = initialState, action = {}) {
           firstName,
           lastName,
           folderId,
+          provider,
         })
       };
     case USER_PROFILE_CREATE_SUCCESS:
@@ -114,6 +146,20 @@ export default function user(state = initialState, action = {}) {
           errorData: action.payload,
         })
       };
+    case USER_PROFILE_SET:
+      return (() => {
+        const { displayName, firstName, lastName, folderId, provider } = action.payload;
+        return {
+          ...state,
+          profile: Object.assign({}, state.profile, {
+            displayName,
+            firstName,
+            lastName,
+            folderId,
+            provider,
+          })
+        };
+      })();
     case USER_RECOVER_PASSWORD:
       return Object.assign({}, state, {
         error: false,

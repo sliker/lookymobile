@@ -1,17 +1,29 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {
+  View,
+} from 'react-native';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as counterActions from '../actions/counterActions';
-import * as userActions from '../actions/userActions';
+import { initSocialLogin } from '../actions/userActions';
+import I18n from '../i18n/i18n';
 
 import LoginMain from '../components/LoginMain/LoginMain';
+import ModalLoading from '../components/Common/ModalLoading/ModalLoading';
+import Toast from '../components/Common/Toast/Toast';
 
 
 const propTypes = {
   navigation: PropTypes.object.isRequired,
+  loading: PropTypes.bool,
+  error: PropTypes.bool,
+};
+
+const defaultProps = {
+  loading: false,
+  error: false,
 };
 
 class LoginContainer extends Component {
@@ -20,6 +32,13 @@ class LoginContainer extends Component {
 
     this.openLoginForm = this.openLoginForm.bind(this);
     this.openSignUpForm = this.openSignUpForm.bind(this);
+    this.socialSignIn = this.socialSignIn.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      this.toast.show(I18n.t('error.message.global'));
+    }
   }
 
   openLoginForm() {
@@ -30,29 +49,48 @@ class LoginContainer extends Component {
     this.props.navigation.navigate('SignUpFormContainer');
   }
 
+  socialSignIn(provider) {
+    this.props.userActions.initSocialLogin(provider);
+  }
+
   render() {
     return (
-      <LoginMain
-        onSingInPress={this.openLoginForm}
-        onSignUpPress={this.openSignUpForm}
-      />
+      <View style={{ flex: 1 }}>
+        <LoginMain
+          onSingInPress={this.openLoginForm}
+          onSignUpPress={this.openSignUpForm}
+          onSocialSignIn={this.socialSignIn}
+        />
+
+        {this.props.loading &&
+          <ModalLoading />
+        }
+
+        <Toast
+          ref={(toast) => {
+            this.toast = toast;
+          }}
+        />
+      </View>
     );
   }
 }
 
 LoginContainer.propTypes = propTypes;
+LoginContainer.defaultProps = defaultProps;
 
 const mapStateToProps = (state) => {
   return {
-    counter: state.counter,
-    user: state.user,
+    loading: state.user.loading,
+    error: state.user.error,
   }
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    userActions: bindActionCreators(userActions, dispatch),
-    counterActions: bindActionCreators(counterActions, dispatch),
+    userActions: bindActionCreators({
+      initSocialLogin,
+    }, dispatch),
   };
 };
 
