@@ -13,7 +13,7 @@ const store = configureStore({});
 export default class App extends Component<{}> {
   constructor(props) {
     super(props);
-    this.app = firebase.initializeApp(environment.firebase);
+    this.app = firebase.initializeApp(__DEV__ ? environment.firebase.dev : environment.firebase.prod);
 
     this.state = {
       isUserSignedIn: false,
