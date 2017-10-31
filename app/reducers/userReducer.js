@@ -118,7 +118,7 @@ export default function user(state = initialState, action = {}) {
         errorMessage: action.payload.errorMessage,
       });
     case USER_PROFILE_CREATE:
-      const { displayName, firstName, lastName, folderId, provider } = action.payload.profile;
+      const { displayName, firstName, lastName, folderId, provider, profilePictureUrl } = action.payload.profile;
       return {
         ...state,
         profile: Object.assign({}, state.profile, {
@@ -128,6 +128,7 @@ export default function user(state = initialState, action = {}) {
           lastName,
           folderId,
           provider,
+          profilePictureUrl,
         })
       };
     case USER_PROFILE_CREATE_SUCCESS:
@@ -148,7 +149,7 @@ export default function user(state = initialState, action = {}) {
       };
     case USER_PROFILE_SET:
       return (() => {
-        const { displayName, firstName, lastName, folderId, provider } = action.payload;
+        const { displayName, firstName, lastName, folderId, provider, profilePictureUrl } = action.payload;
         return {
           ...state,
           profile: Object.assign({}, state.profile, {
@@ -157,6 +158,7 @@ export default function user(state = initialState, action = {}) {
             lastName,
             folderId,
             provider,
+            profilePictureUrl,
           })
         };
       })();

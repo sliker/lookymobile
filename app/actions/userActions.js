@@ -173,6 +173,7 @@ export const initSocialLogin = (provider) => {
                   lastName: '',
                   folderId: createFolderId(),
                   provider: provider,
+                  profilePictureUrl: user.photoURL,
                 };
                 return dispatch(initCreateProfile(user.uid, profileData));
               }
@@ -185,6 +186,7 @@ export const initSocialLogin = (provider) => {
                 lastName: profile.lastName || '',
                 folderId: profile.folderId,
                 provider: profile.provider,
+                profilePictureUrl: profile.photoURL,
               };
 
               return dispatch(setUserProfile(profileData));
@@ -264,6 +266,7 @@ export const initCreateProfile = (userId, userProfileData) => {
         lastName: userProfileData.lastName,
         folderId: userProfileData.folderId,
         provider: userProfileData.provider,
+        profilePictureUrl: userProfileData.profilePictureUrl,
       })
       .then(() => dispatch(createProfileSuccess()))
       .catch(error => dispatch(createProfileError(error)));
