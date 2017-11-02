@@ -36,7 +36,6 @@ const initialState = {
     latitude: '',
     longitude: '',
     provider: '',
-    profilePicture: '',
     profilePictureUrl: '',
     pets: {
       found: [],

@@ -3602,6 +3602,10 @@ react-native-fbsdk@^0.6.3:
     pump "^1.0.2"
     xcode "^0.9.3"
 
+react-native-google-signin@^0.12.0:
+  version "0.12.0"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/react-native-google-signin/-/react-native-google-signin-0.12.0.tgz#fc549593adbc92ed2a5a683a957f157650ece961"
+
 react-native-i18n@^2.0.6:
   version "2.0.6"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/react-native-i18n/-/react-native-i18n-2.0.6.tgz#474a3ad79aac34965b2eb7148cf2703398efb406"

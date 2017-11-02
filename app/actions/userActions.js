@@ -1,7 +1,9 @@
 import * as firebase from 'firebase';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { GoogleSignin } from 'react-native-google-signin';
 
 import { createFolderId } from '../utils/imageUtil';
+import { environment } from '../../environment/environment';
 
 import {
   USER_LOGIN_SOCIAL,
@@ -169,7 +171,7 @@ export const initSocialLogin = (provider) => {
               if (!snapshot.exists()) {
                 const profileData = {
                   displayName: user.displayName,
-                  firstName: '',
+                  firstName: user.displayName,
                   lastName: '',
                   folderId: createFolderId(),
                   provider: provider,
@@ -186,7 +188,7 @@ export const initSocialLogin = (provider) => {
                 lastName: profile.lastName || '',
                 folderId: profile.folderId,
                 provider: profile.provider,
-                profilePictureUrl: profile.photoURL,
+                profilePictureUrl: profile.profilePictureUrl,
               };
 
               return dispatch(setUserProfile(profileData));
@@ -202,7 +204,7 @@ export const initSocialLogin = (provider) => {
             if (result.isCancelled) {
               return dispatch(loginWithSocialCanceled());
             } else {
-              // Login successful :D
+              // Facebook Login successful :D
               AccessToken.getCurrentAccessToken().then((data) => {
                 const token = data.accessToken.toString();
                 const credential = firebase.auth.FacebookAuthProvider.credential(token);
@@ -217,8 +219,29 @@ export const initSocialLogin = (provider) => {
             }
           }, (error) => dispatch(loginWithSocialError(error)));
       case 'google':
-        // TODO
-        return;
+        return GoogleSignin.hasPlayServices({ autoResolve: true })
+          .then(() => {
+            GoogleSignin.configure({
+              iosClientId: __DEV__ ? environment.dev.oauthClient.iosClientId : environment.prod.oauthClient.iosClientId,
+            })
+              .then(() => {
+                GoogleSignin.signIn()
+                  .then((user) => {
+                    // Google Login successful :D
+                    const token = user.idToken;
+                    const credential = firebase.auth.GoogleAuthProvider.credential(token);
+
+                    if (!credential || !token) {
+                      return dispatch(loginWithSocialError('No auth provider or not token'));
+                    }
+
+                    return firebaseLogin(credential, token);
+                  })
+                  .catch(error => dispatch(loginWithSocialError(error)));
+              })
+              .catch(error => dispatch(loginWithSocialError(error)));
+        })
+          .catch(error => dispatch(loginWithSocialError(error)));
       default:
         return dispatch(loginWithSocialError('No valid login provider'));
     }
@@ -247,6 +270,7 @@ export const initSignUpUserWithEmail = (userData) => {
           lastName: userData.lastName,
           folderId: createFolderId(),
           provider: 'password',
+          profilePictureUrl: '',
         };
 
         dispatch(signUpUserWithEmailSuccess(user.uid));
