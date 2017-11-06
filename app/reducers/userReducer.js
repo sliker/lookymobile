@@ -17,6 +17,10 @@ import {
   USER_RECOVER_PASSWORD_SUCCESS,
   USER_RECOVER_PASSWORD_ERROR,
   USER_RECOVER_PASSWORD_RESET,
+  USER_SET_DATA_ALREADY_LOGIN,
+  USER_SIGN_OUT_SUCCESS,
+  USER_SIGN_OUT_ERROR,
+  USER_SET_LOCATION,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -80,15 +84,13 @@ export default function user(state = initialState, action = {}) {
         loading: true,
         error: false,
       });
+    case USER_SET_DATA_ALREADY_LOGIN:
     case USER_LOGIN_WITH_EMAIL_SUCCESS:
       return Object.assign({}, state, {
         loading: false,
         error: false,
         userId: action.payload.uid,
         email: action.payload.email,
-        profile: Object.assign({}, state.profile, {
-          profilePictureUrl: action.payload.photoURL,
-        })
       });
     case USER_LOGIN_SOCIAL_ERROR:
     case USER_LOGIN_WITH_EMAIL_ERROR:
@@ -146,6 +148,19 @@ export default function user(state = initialState, action = {}) {
           errorData: action.payload,
         })
       };
+    case USER_SIGN_OUT_SUCCESS:
+      return Object.assign({}, state , {
+        email: '',
+        token: '',
+        userId: '',
+        signOutError: false,
+        profile: Object.assign({}),
+      });
+    case USER_SIGN_OUT_ERROR:
+      return Object.assign({}, state, {
+        signOutError: true,
+        errorData: action.payload,
+      });
     case USER_PROFILE_SET:
       return (() => {
         const { displayName, firstName, lastName, folderId, provider, profilePictureUrl } = action.payload;
@@ -192,6 +207,14 @@ export default function user(state = initialState, action = {}) {
         recoverPassword: Object.assign({}, state.recoverPassword, {
           success: false,
           error: false,
+        })
+      };
+    case USER_SET_LOCATION:
+      return {
+        ...state,
+        profile: Object.assign({}, state.profile, {
+          latitude: action.payload.latitude,
+          longitude: action.payload.longitude,
         })
       };
     default:

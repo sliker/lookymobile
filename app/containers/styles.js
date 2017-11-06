@@ -7,7 +7,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     flex: 1,
     padding: layout.padding,
-  }
+  },
+  navigationDrawer: {
+    backgroundColor: colors.blueGrey900,
+    flex: 1,
+    paddingTop: 22,
+  },
 });
 
 export default styles;

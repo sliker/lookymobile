@@ -1,4 +1,5 @@
 import * as firebase from 'firebase';
+import GeoFire from 'geofire';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import { GoogleSignin } from 'react-native-google-signin';
 
@@ -24,6 +25,10 @@ import {
   USER_RECOVER_PASSWORD_SUCCESS,
   USER_RECOVER_PASSWORD_ERROR,
   USER_RECOVER_PASSWORD_RESET,
+  USER_SET_DATA_ALREADY_LOGIN,
+  USER_SIGN_OUT_SUCCESS,
+  USER_SIGN_OUT_ERROR,
+  USER_SET_LOCATION,
 } from './actionTypes';
 
 const loginWithEmail = (email) => {
@@ -156,6 +161,82 @@ export const recoverPasswordReset = () => {
   }
 };
 
+export const signOutSuccess = () => {
+  return {
+    type: USER_SIGN_OUT_SUCCESS,
+  }
+};
+
+export const signOutError = (error) => {
+  return {
+    type: USER_SIGN_OUT_ERROR,
+    payload: error,
+  }
+};
+
+const setDataAlreadyLogin = (user) => {
+  return {
+    type: USER_SET_DATA_ALREADY_LOGIN,
+    payload: user,
+  }
+};
+
+const setUserLocation = (location) => {
+  return {
+    type: USER_SET_LOCATION,
+    payload: location,
+  }
+};
+
+const firebaseUserProfile = (user, provider, dispatch) => {
+  // check if user has profile
+  return firebase.app().database().ref(`/users/${user.uid}`).once('value')
+    .then((snapshot) => {
+      // if not profile, create one
+      if (!snapshot.exists()) {
+        const profileData = {
+          displayName: user.displayName,
+          firstName: user.displayName,
+          lastName: '',
+          folderId: createFolderId(),
+          provider: provider,
+          profilePictureUrl: user.photoURL,
+        };
+        return dispatch(initCreateProfile(user.uid, profileData));
+      }
+
+      // user already has a profile, so set the data to the store
+      const profile = snapshot.val();
+      const profileData = {
+        displayName: profile.displayName,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        folderId: profile.folderId,
+        provider: profile.provider,
+        profilePictureUrl: profile.profilePictureUrl,
+      };
+
+      dispatch(initSetUserLocation());
+      return dispatch(setUserProfile(profileData));
+    });
+};
+
+const setUserLocationOnFirebase = (userId, location) => {
+  const userUpdates = {
+    latitude: location.latitude,
+    longitude: location.longitude,
+  };
+  const databaseRef = firebase.app().database().ref();
+  const geoRef = databaseRef.child('/_geo/users');
+  const geoFire = new GeoFire(geoRef);
+  geoFire.set(userId, [location.latitude, location.longitude])
+    .catch((error) => {
+      // TODO handle errors, save log on Firebase
+    });
+
+  return databaseRef.child(`/users/${userId}`).update(userUpdates);
+};
+
 export const initSocialLogin = (provider) => {
   return (dispatch) => {
     dispatch(loginWithSocial(provider));
@@ -164,35 +245,7 @@ export const initSocialLogin = (provider) => {
       return firebase.app().auth().signInWithCredential(credential)
         .then((user) => {
           dispatch(loginWithSocialSuccess(user, token));
-          // check if user has profile
-          return firebase.app().database().ref(`/users/${user.uid}`).once('value')
-            .then((snapshot) => {
-              // if not profile, create one
-              if (!snapshot.exists()) {
-                const profileData = {
-                  displayName: user.displayName,
-                  firstName: user.displayName,
-                  lastName: '',
-                  folderId: createFolderId(),
-                  provider: provider,
-                  profilePictureUrl: user.photoURL,
-                };
-                return dispatch(initCreateProfile(user.uid, profileData));
-              }
-
-              // user already has a profile, so set the data to the store
-              const profile = snapshot.val();
-              const profileData = {
-                displayName: profile.displayName,
-                firstName: profile.firstName || '',
-                lastName: profile.lastName || '',
-                folderId: profile.folderId,
-                provider: profile.provider,
-                profilePictureUrl: profile.profilePictureUrl,
-              };
-
-              return dispatch(setUserProfile(profileData));
-            });
+          return firebaseUserProfile(user, provider, dispatch);
         })
         .catch((error) => dispatch(loginWithSocialError(error)));
     };
@@ -214,7 +267,6 @@ export const initSocialLogin = (provider) => {
                 }
 
                 return firebaseLogin(credential, token);
-
               });
             }
           }, (error) => dispatch(loginWithSocialError(error)));
@@ -292,7 +344,10 @@ export const initCreateProfile = (userId, userProfileData) => {
         provider: userProfileData.provider,
         profilePictureUrl: userProfileData.profilePictureUrl,
       })
-      .then(() => dispatch(createProfileSuccess()))
+      .then(() => {
+        dispatch(initSetUserLocation());
+        return dispatch(createProfileSuccess())
+      })
       .catch(error => dispatch(createProfileError(error)));
   };
 };
@@ -303,5 +358,54 @@ export const initRecoverPassword = (email) => {
     return firebase.app().auth().sendPasswordResetEmail(email)
       .then(() => dispatch(recoverPasswordSuccess()))
       .catch(error => dispatch(recoverPasswordError(error)))
+  };
+};
+
+export const initSignOut = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const auth = firebase.app().auth();
+    const providerId = state.user.profile.provider;
+    return auth.signOut()
+      .then(() => {
+        if (providerId === 'google') {
+          GoogleSignin.signOut();
+        } else if (providerId === 'facebook') {
+          LoginManager.logOut();
+        }
+        return dispatch(signOutSuccess());
+      })
+      .catch(error => dispatch(signOutError(error)));
+  };
+};
+
+export const initSetDataAlreadyLogin = (user) => {
+  return (dispatch, getState) => {
+    const userState = getState().user;
+    // check if not profile set
+    if (!userState.profile.displayName) {
+      dispatch(setDataAlreadyLogin(user));
+      return firebaseUserProfile(user, user.providerId, dispatch);
+    }
+
+    return userState;
+  };
+};
+
+const initSetUserLocation = () => {
+  return (dispatch, getState) => {
+    return navigator.geolocation.getCurrentPosition((position) => {
+      const location = {
+        latitude: parseFloat(position.coords.latitude),
+        longitude: parseFloat(position.coords.longitude),
+      };
+      const userId = getState().user.userId;
+      dispatch(setUserLocation(location));
+
+      return setUserLocationOnFirebase(userId, location);
+    }, (error) => {
+      // TODO: dispatch action with error
+      console.log('-- location error --', error);
+    }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 900000 /* 15 minutes */ });
   };
 };

@@ -1,45 +1,54 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
 import { Provider } from 'react-redux'
 
 import * as firebase from 'firebase';
 
 import { environment } from '../environment/environment';
 import configureStore from './store/createStore';
-import { LoginStack } from './router/router';
+import { LoginStack, MainStack } from './router/router';
+import { initSetDataAlreadyLogin } from './actions/userActions';
 
 const store = configureStore({});
 
 export default class App extends Component<{}> {
   constructor(props) {
     super(props);
-    this.app = firebase.initializeApp(__DEV__ ? environment.dev.firebase : environment.prod.firebase);
+    this.firebaseApp = firebase.initializeApp(__DEV__ ? environment.dev.firebase : environment.prod.firebase);
 
     this.state = {
       isUserSignedIn: false,
+      loadingUserAuth: true,
     };
   }
 
-  componentDidMount() {
-    this.app.auth().onAuthStateChanged((user) => {
+  componentWillMount() {
+    // observe for auth state changes
+    this.firebaseApp.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({
           isUserSignedIn: true,
+          loadingUserAuth: false,
         });
+        store.dispatch(initSetDataAlreadyLogin(user));
       } else {
         this.setState({
           isUserSignedIn: false,
+          loadingUserAuth: false,
         });
       }
     });
   }
 
   render() {
-    const { isUserSignedIn } = this.state;
+    const { isUserSignedIn, loadingUserAuth } = this.state;
+
+    if (loadingUserAuth) {
+      // TODO: render splash screen
+      return null;
+    }
+
     const main = (isUserSignedIn) ? (
-      <Text style={{ flex: 1, alignItems: 'center', alignSelf: 'center', justifyContent: 'center'}}>
-        User signed in!
-      </Text>
+      <MainStack />
     ) : (
       <LoginStack />
     );
