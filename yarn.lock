@@ -2092,6 +2092,10 @@ image-size@^0.6.0:
   version "0.6.1"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/image-size/-/image-size-0.6.1.tgz#98122a562d59dcc097ef1b2c8191866eb8f5d663"
 
+immutable@>=3.8, immutable@^3.8.2:
+  version "3.8.2"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
+
 imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
@@ -3047,6 +3051,10 @@ minimist@~0.0.1:
   dependencies:
     minimist "0.0.8"
 
+moment@^2.19.2:
+  version "2.19.2"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
+
 morgan@~1.6.1:
   version "1.6.1"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/morgan/-/morgan-1.6.1.tgz#5fd818398c6819cba28a7cd6664f292fe1c0bbf2"
@@ -3616,6 +3624,13 @@ react-native-i18n@^2.0.6:
   dependencies:
     i18n-js "github:fnando/i18n-js#v3.0.1"
 
+react-native-immutable-list-view@^0.6.2:
+  version "0.6.2"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/react-native-immutable-list-view/-/react-native-immutable-list-view-0.6.2.tgz#294fb9327bd39e6565ad07a2da83aa71e5902d31"
+  dependencies:
+    immutable ">=3.8"
+    prop-types "^15.5.10"
+
 react-native-keyboard-aware-scroll-view@^0.3.0:
   version "0.3.0"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/react-native-keyboard-aware-scroll-view/-/react-native-keyboard-aware-scroll-view-0.3.0.tgz#b9d7b0d5b47d2bb4285fe50a3d274b10a3b5e1a7"
@@ -3629,6 +3644,10 @@ react-native-linear-gradient@^2.3.0:
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/react-native-linear-gradient/-/react-native-linear-gradient-2.3.0.tgz#757997197e35edf52e290891a11566e462845da1"
   dependencies:
     prop-types "^15.5.10"
+
+react-native-maps@^0.18.2:
+  version "0.18.3"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/react-native-maps/-/react-native-maps-0.18.3.tgz#85dee19596aff434ff65d69b5a218288c3363a3d"
 
 react-native-tab-view@^0.0.69:
   version "0.0.69"
@@ -3799,6 +3818,10 @@ readable-stream@~1.1.8, readable-stream@~1.1.9:
     inherits "~2.0.1"
     isarray "0.0.1"
     string_decoder "~0.10.x"
+
+redux-immutable@^4.0.0:
+  version "4.0.0"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/redux-immutable/-/redux-immutable-4.0.0.tgz#3a1a32df66366462b63691f0e1dc35e472bbc9f3"
 
 redux-logger@^3.0.6:
   version "3.0.6"
@@ -3984,6 +4007,10 @@ rimraf@2, rimraf@^2.5.1, rimraf@^2.5.4, rimraf@^2.6.1:
 rimraf@~2.2.6:
   version "2.2.8"
   resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
+
+rn-viewpager@^1.2.8:
+  version "1.2.8"
+  resolved "https://repo.symphony.com/artifactory/api/npm/npm-virtual-dev/rn-viewpager/-/rn-viewpager-1.2.8.tgz#f3a735d1957c3c3b36309f6a99fc47976a1ed117"
 
 rndm@1.2.0:
   version "1.2.0"

@@ -4,9 +4,6 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
-import { initSignOut } from '../actions/userActions';
 
 import NavigationDrawer from '../components/NavigationDrawer/NavigationDrawer';
 
@@ -16,6 +13,7 @@ const propTypes = {
   profilePictureUrl: PropTypes.string,
   displayName: PropTypes.string,
   email: PropTypes.string.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -27,11 +25,11 @@ class NavigationDrawerContentContainer extends Component {
   constructor(props) {
     super(props);
 
-    this.logout = this.logout.bind(this);
+    this.navigateToScreen = this.navigateToScreen.bind(this);
   }
 
-  logout() {
-    this.props.userActions.initSignOut();
+  navigateToScreen(screen) {
+    this.props.navigation.navigate(screen);
   }
 
   render() {
@@ -43,7 +41,7 @@ class NavigationDrawerContentContainer extends Component {
           displayName={displayName}
           email={email}
           profilePictureUrl={profilePictureUrl}
-          onLogout={this.logout}
+          onNavigateToScreen={this.navigateToScreen}
         />
       </View>
     );
@@ -55,18 +53,10 @@ NavigationDrawerContentContainer.defaultProps = defaultProps;
 
 const mapStateToProps = (state) => {
   return {
-    profilePictureUrl: state.user.profile.profilePictureUrl,
-    displayName: state.user.profile.displayName,
-    email: state.user.email,
+    profilePictureUrl: state.getIn([ 'user', 'profile', 'profilePictureUrl']),
+    displayName: state.getIn([ 'user', 'profile', 'displayName']),
+    email: state.getIn([ 'user', 'email']),
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    userActions: bindActionCreators({
-      initSignOut,
-    }, dispatch),
-  }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationDrawerContentContainer);
+export default connect(mapStateToProps)(NavigationDrawerContentContainer);

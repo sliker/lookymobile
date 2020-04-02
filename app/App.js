@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 
+import { fromJS } from 'immutable';
 import * as firebase from 'firebase';
 
 import { environment } from '../environment/environment';
 import configureStore from './store/createStore';
 import { LoginStack, MainStack } from './router/router';
-import { initSetDataAlreadyLogin } from './actions/userActions';
+import { initSetDataAlreadyLogin } from './data/user/userActions';
 
-const store = configureStore({});
+const store = configureStore(fromJS({}));
 
 export default class App extends Component<{}> {
   constructor(props) {
@@ -29,7 +30,10 @@ export default class App extends Component<{}> {
           isUserSignedIn: true,
           loadingUserAuth: false,
         });
-        store.dispatch(initSetDataAlreadyLogin(user));
+        // check if user already logged in on load or is a new login
+        if (!store.getState().getIn([ 'user', 'profile', 'provider' ])) {
+          store.dispatch(initSetDataAlreadyLogin(user));
+        }
       } else {
         this.setState({
           isUserSignedIn: false,

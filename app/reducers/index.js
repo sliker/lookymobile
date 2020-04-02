@@ -1,9 +1,11 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux-immutable'
 
-import counter from './counterReducer'
-import user from './userReducer';
+import user from '../data/user/userReducer';
+import pets from '../data/pets/petsReducer';
+import userProfiles from '../data/userProfiles/userProfilesReducer';
 
 export default combineReducers({
   user,
-  counter,
+  pets,
+  userProfiles,
 });

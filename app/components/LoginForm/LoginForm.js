@@ -51,7 +51,7 @@ class LoginForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.error || nextProps.recoverPassword.error || nextProps.recoverPassword.success) {
+    if (nextProps.error || nextProps.recoverPassword.get('error') || nextProps.recoverPassword.get('success')) {
       // TODO: Fix position of Toast or see how to hide keyboard when focus after recover password alert dismissed
       Keyboard.dismiss();
     }

@@ -13,6 +13,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 22,
   },
+  listView: {
+    backgroundColor: colors.white,
+    marginBottom: 8,
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 1.5
+    },
+    shadowOpacity: .2,
+    shadowRadius: 0,
+  },
 });
 
 export default styles;

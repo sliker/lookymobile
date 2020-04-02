@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { initSignUpUserWithEmail } from '../actions/userActions';
+import { initSignUpUserWithEmail } from '../data/user/userActions';
 import styles from './styles';
 
 import SignUpForm from '../components/SignUpForm/SignUpForm';
@@ -56,7 +56,7 @@ SignUpFormContainer.defaultProps = defaultProps;
 
 const mapStateToProps = (state) => {
   return {
-    loading: state.user.loading,
+    loading: state.get('user').loading,
   }
 };
 

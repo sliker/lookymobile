@@ -41,10 +41,6 @@ class SignUpForm extends Component {
     this.onSignUp = this.onSignUp.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps.loading);
-  }
-
   onSignUp() {
     const { loading, onFormSignUp } = this.props;
     const { firstName, lastName, email, password } = this.state;

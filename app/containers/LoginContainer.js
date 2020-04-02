@@ -7,7 +7,7 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { initSocialLogin } from '../actions/userActions';
+import { initSocialLogin } from '../data/user/userActions';
 import I18n from '../i18n/i18n';
 
 import LoginMain from '../components/LoginMain/LoginMain';
@@ -81,8 +81,8 @@ LoginContainer.defaultProps = defaultProps;
 
 const mapStateToProps = (state) => {
   return {
-    loading: state.user.loading,
-    error: state.user.error,
+    loading: state.get('user').loading,
+    error: state.get('user').error,
   }
 };
 

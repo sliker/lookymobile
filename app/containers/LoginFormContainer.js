@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { initLoginWithEmail, initRecoverPassword, recoverPasswordReset } from '../actions/userActions';
+import { initLoginWithEmail, initRecoverPassword, recoverPasswordReset } from '../data/user/userActions';
 import I18n from '../i18n/i18n';
 
 import LoginForm from '../components/LoginForm/LoginForm';
@@ -41,10 +41,10 @@ class LoginFormContainer extends Component {
       this.toast.show(I18n.t('error.message.login_title'));
     }
 
-    if (nextProps.recoverPassword.success) {
+    if (nextProps.recoverPassword.get('success')) {
       this.toast.show(I18n.t('success.message.recovery'));
       this.props.userActions.recoverPasswordReset();
-    } else if (nextProps.recoverPassword.error) {
+    } else if (nextProps.recoverPassword.get('error')) {
       this.toast.show(I18n.t('error.message.global'));
       this.props.userActions.recoverPasswordReset();
     }
@@ -86,9 +86,9 @@ LoginFormContainer.defaultProps = defaultProps;
 
 const mapStateToProps = (state) => {
   return {
-    loading: state.user.loading,
-    error: state.user.error,
-    recoverPassword: state.user.recoverPassword,
+    loading: state.get('user').loading,
+    error: state.get('user').error,
+    recoverPassword: state.get('user').recoverPassword,
   }
 };
 

@@ -13,6 +13,9 @@ import LoginFormContainer from '../containers/LoginFormContainer';
 import NavigationDrawerContentContainer from '../containers/NavigationDrawerContentContainer';
 import LostPetsContainer from '../containers/LostPetsContainer';
 import FoundPetsContainer from '../containers/FoundPetsContainer';
+import SettingsContainer from '../containers/SettingsContainer';
+import PetDetailContainer from '../containers/PetDetailContainer';
+import { looky } from '../utils/constants';
 import { colors } from '../styles/Theme';
 
 const commonNavigatorProps = {
@@ -65,27 +68,66 @@ const MainPetsTabsStack = TabNavigator({
   LostPets: {
     screen: LostPetsContainer,
     navigationOptions: {
-      tabBarLabel: 'Lost',
+      tabBarLabel: I18n.t('tabs.main.lost'),
+      tabBarIcon: ({ tintColor }) => (
+        <Image
+          style={{ tintColor: tintColor}}
+          source={require('../../assets/images/icons/ic_warning.png')}
+        />
+      )
     },
   },
   FoundPets: {
     screen: FoundPetsContainer,
     navigationOptions: {
-      tabBarLabel: 'Found',
+      tabBarLabel: I18n.t('tabs.main.found'),
+      tabBarIcon: ({ tintColor }) => (
+        <Image
+          style={{ tintColor: tintColor}}
+          source={require('../../assets/images/icons/ic_search.png')}
+        />
+      )
     },
+  },
+}, {
+  animationEnabled: true,
+  tabBarOptions: {
+    activeTintColor: colors.primary,
   },
 });
 
 const MainPetsStack = StackNavigator({
   MainPets: {
     screen: MainPetsTabsStack,
-  }
-}, {
-  navigationOptions: ({ navigation }) => ({
-    title: 'Looky',
-    headerLeft: drawerButton(navigation),
-    ...commonNavigatorProps,
-  }),
+    navigationOptions: ({ navigation }) => ({
+      title: looky,
+      headerBackTitle: null,
+      headerLeft: drawerButton(navigation),
+      ...commonNavigatorProps,
+    }),
+  },
+  Settings: {
+    screen: SettingsContainer,
+    navigationOptions: {
+      title: I18n.t('navigation.drawer.settings'),
+      ...commonNavigatorProps,
+    },
+  },
+  PetDetail: {
+    screen: PetDetailContainer,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.state.params.petName,
+      headerTintColor: colors.white,
+      headerStyle: {
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+      }
+    })
+  },
 });
 
 export const MainStack = DrawerNavigator({

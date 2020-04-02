@@ -28,6 +28,7 @@ const colors = {
 const layout = {
   navigationBarMargin: 50,
   padding: 16,
+  margin: 16,
 };
 
 export {

@@ -1,4 +1,8 @@
 const en = {
+  global: {
+    published: 'Published',
+  },
+
   section: {
     title: {
       login: 'Log in',
@@ -44,6 +48,85 @@ const en = {
 
   buttons: {
     cancel: 'Cancel',
+  },
+
+  tabs: {
+    main: {
+      lost: 'Lost',
+      found: 'Found',
+    },
+  },
+
+  navigation: {
+    drawer: {
+      settings: 'Settings',
+    }
+  },
+
+  settings: {
+    label: {
+      account: 'My account',
+      about: 'About',
+    },
+    account: {
+      editProfile: 'Edit profile',
+      deleteAccount: 'Delete my account',
+      changePassword: 'Change password',
+      logout: 'Logout',
+    },
+    about: {
+      terms: 'Terms of service',
+      privacy: 'Privacy policies',
+    },
+  },
+
+  pet: {
+
+    gender: {
+      header: 'Gender',
+      male: 'Male',
+      female: 'Female',
+    },
+    size: {
+      header: 'Size',
+      small: 'Small',
+      medium: 'Medium',
+      large: 'Large',
+    },
+    age: {
+      header: 'Age',
+      puppy: 'Puppy',
+      adult: 'Adult',
+      senior: 'Aged',
+    },
+
+    details: {
+      name: 'Name',
+      date: 'Date on which it',
+      breed: 'Breed',
+      address: 'Address at which',
+      neighborhood: 'Neighborhood',
+      city: 'City',
+      description: 'Description',
+      advice: 'Advices',
+      chipNumber: 'Chip number',
+      deleted: 'This pet was deleted.',
+
+      tab: {
+        information: 'Information',
+        location: 'Location',
+      },
+    },
+
+    lost: {
+      word: 'lost',
+      date: 'Lost:'
+    },
+    found: {
+      word: 'found',
+      date: 'Found:'
+    },
+
   },
 };
 

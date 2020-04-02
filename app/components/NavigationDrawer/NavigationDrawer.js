@@ -7,13 +7,13 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 import TextRoboto from '../Common/TextRoboto/TextRoboto';
-import Button from '../Common/Button/Button';
 import NotificationDrawerItem from './NotificationDrawerItem/NotificationDrawerItem';
 
 const propTypes = {
   profilePictureUrl: PropTypes.string,
   displayName: PropTypes.string,
   email: PropTypes.string.isRequired,
+  onNavigateToScreen: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -22,22 +22,29 @@ const defaultProps = {
 };
 
 class NavigationDrawer extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    const { email, displayName, profilePictureUrl, onLogout } = this.props;
+    const { email, displayName, profilePictureUrl, onNavigateToScreen } = this.props;
     const image = profilePictureUrl ? {uri: profilePictureUrl} : require('../../../assets/images/default_profile_picture.png');
 
     const items = [
       {
         icon: require('../../../assets/images/icons/ic_pets_white.png'),
         title: 'My reports',
+        screen:'MyReports',
       },
       {
         icon: require('../../../assets/images/icons/ic_message_white.png'),
         title: 'Messages',
+        screen: 'Messages',
       },
       {
         icon: require('../../../assets/images/icons/ic_settings_white.png'),
         title: 'Settings',
+        screen: 'Settings',
       }
     ];
 
@@ -60,17 +67,11 @@ class NavigationDrawer extends Component {
           return (
             <NotificationDrawerItem
               key={`navigation-drawer-${index}`}
-              title={item.title}
-              icon={item.icon}
+              item={item}
+              onNavigateToScreen={onNavigateToScreen}
             />
           );
         })}
-
-        <Button
-          onPressButton={onLogout}
-        >
-          Logout
-        </Button>
       </View>
     );
   }
